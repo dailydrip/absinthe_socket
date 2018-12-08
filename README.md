@@ -30,6 +30,8 @@ Create a socket, connect it, add a subscription:
     notifier.observe(_categoryObserver);
     // I also track notifiers to cancel them when my flutter widget is disposed of
     _notifiers.add(notifier);
+    // Then when the widget is disposed, I cancel the notifiers:
+    _notifiers.forEach((Notifier notifier) => _socket.cancel(notifier))
 ```
 
 This is a shameless bad rip-off of part of the API of [@absinthe/socket](https://github.com/absinthe-graphql/absinthe-socket).
