@@ -1,0 +1,12 @@
+name: absinthe_socket
+description: A GraphQL subscription client for Absinthe sockets.
+version: 0.0.1
+author: Josh Adams <josh@smoothterminal.com>
+homepage: https://www.smoothterminal.com
+
+environment:
+  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+
+dependencies:
+  # Talk to phoenix channels
+  phoenix_wings: ^0.1.3
