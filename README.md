@@ -9,7 +9,7 @@ Use the package:
 ```yaml
 # pubspec.yaml
 # ...
-  absinthe_socket: ^0.0.1
+  absinthe_socket: ^0.0.2
 # ...
 ```
 
