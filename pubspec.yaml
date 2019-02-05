@@ -1,6 +1,6 @@
 name: absinthe_socket
 description: A GraphQL subscription client for Absinthe sockets.
-version: 0.0.2
+version: 0.0.3
 author: Josh Adams <josh@smoothterminal.com>
 homepage: http://github.com/dailydrip/absinthe_socket
 
