@@ -62,6 +62,10 @@ class AbsintheSocket {
     _absintheChannel.join().receive("ok", _sendQueuedPushes);
   }
 
+  disconnect() {
+    _phoenixSocket.disconnect();
+  }
+
   _sendQueuedPushes(_) {
     _queuedPushes.forEach((notifier) {
       _pushRequest(notifier);
