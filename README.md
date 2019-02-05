@@ -9,7 +9,7 @@ Use the package:
 ```yaml
 # pubspec.yaml
 # ...
-  absinthe_socket: ^0.0.2
+  absinthe_socket: ^0.0.3
 # ...
 ```
 
@@ -32,6 +32,8 @@ Create a socket, connect it, add a subscription:
     _notifiers.add(notifier);
     // Then when the widget is disposed, I cancel the notifiers:
     _notifiers.forEach((Notifier notifier) => _socket.cancel(notifier))
+    // And you can disconnect the socket:
+    _socket.disconnect();
 ```
 
 This is a shameless bad rip-off of part of the API of [@absinthe/socket](https://github.com/absinthe-graphql/absinthe-socket).
