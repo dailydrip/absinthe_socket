@@ -9,13 +9,14 @@ Use the package:
 ```yaml
 # pubspec.yaml
 # ...
-  absinthe_socket: ^0.0.3
+  absinthe_socket: ^0.0.4
 # ...
 ```
 
 Create a socket, connect it, add a subscription:
 
 ```dart
+void initState() {
     _socket = AbsintheSocket("ws://10.0.2.2:4000/socket/websocket");
     Observer _categoryObserver = Observer(
         onAbort: _onAbort,
