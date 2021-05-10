@@ -1,3 +1,5 @@
+// @dart=2.9
+
 library absinthe_socket;
 
 import 'package:phoenix_wings/phoenix_wings.dart';
