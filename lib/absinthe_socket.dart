@@ -1,6 +1,11 @@
 library absinthe_socket;
 
 import 'package:phoenix_wings/phoenix_wings.dart';
+import 'absinthe_socket_options.dart';
+
+import 'get_socket_by_platform/get_socket_by_platform_abstract.dart'
+    if (dart.library.io) 'get_socket_by_platform/get_socket_by_mobile.dart'
+    if (dart.library.js) 'get_socket_by_platform/get_socket_by_web.dart';
 
 /// An Absinthe Socket
 class AbsintheSocket {
@@ -49,9 +54,7 @@ class AbsintheSocket {
         onError: _onError,
         onTimeout: _onTimeout,
         onSucceed: _onUnsubscriptionSucceed);
-    _phoenixSocket = PhoenixSocket(endpoint,
-        socketOptions: PhoenixSocketOptions(
-            params: socketOptions.params..addAll({"vsn": "2.0.0"})));
+    _phoenixSocket = getPheonixSocket(endpoint, socketOptions);
     _connect();
   }
 
@@ -129,14 +132,6 @@ class AbsintheSocket {
         onError: notifierPushHandler.onError,
         onSucceed: notifierPushHandler.onSucceed(notifier),
         onTimeout: notifierPushHandler.onTimeout);
-  }
-}
-
-class AbsintheSocketOptions {
-  Map<String, String> params = {};
-
-  AbsintheSocketOptions({this.params}) {
-    if (params == null) params = {};
   }
 }
 
