@@ -6,7 +6,7 @@ PhoenixSocket getPheonixSocket(
   return PhoenixSocket(
     endpoint,
     socketOptions: PhoenixSocketOptions(
-      params: socketOptions.params..addAll({"vsn": "2.0.0"}),
+      params: socketOptions.params?..addAll({"vsn": "2.0.0"}),
     ),
   );
 }
