@@ -1,8 +1,7 @@
-import 'package:absinthe_socket/absinthe_socket_options.dart';
 import 'package:phoenix_wings/phoenix_wings.dart';
 
 PhoenixSocket getPheonixSocket(
-    String endpoint, AbsintheSocketOptions socketOptions) {
+    String endpoint, PhoenixSocketOptions socketOptions) {
   return PhoenixSocket(
     endpoint,
     socketOptions: PhoenixSocketOptions(

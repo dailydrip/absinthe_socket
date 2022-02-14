@@ -1,7 +1,7 @@
 library absinthe_socket;
 
 import 'package:phoenix_wings/phoenix_wings.dart';
-import 'absinthe_socket_options.dart';
+export 'package:phoenix_wings/phoenix_wings.dart';
 
 import 'get_socket_by_platform/get_socket_by_platform_abstract.dart'
     if (dart.library.io) 'get_socket_by_platform/get_socket_by_mobile.dart'
@@ -10,7 +10,7 @@ import 'get_socket_by_platform/get_socket_by_platform_abstract.dart'
 /// An Absinthe Socket
 class AbsintheSocket {
   String endpoint;
-  AbsintheSocketOptions? socketOptions = AbsintheSocketOptions();
+  PhoenixSocketOptions? socketOptions = PhoenixSocketOptions();
   late PhoenixSocket _phoenixSocket;
   PhoenixChannel? _absintheChannel;
   List<Notifier> _notifiers = [];
@@ -45,7 +45,7 @@ class AbsintheSocket {
   }
 
   AbsintheSocket(this.endpoint, {this.socketOptions}) {
-    if (socketOptions == null) socketOptions = AbsintheSocketOptions();
+    if (socketOptions == null) socketOptions = PhoenixSocketOptions();
     subscriptionHandler = NotifierPushHandler(
         onError: _onError,
         onTimeout: _onTimeout,
