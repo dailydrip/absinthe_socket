@@ -113,8 +113,10 @@ class AbsintheSocket {
       _queuedPushes.add(notifier);
     } else {
       _handlePush(
-          _absintheChannel!.push(
-              event: "doc", payload: {"query": notifier.request!.operation})!,
+          _absintheChannel!.push(event: "doc", payload: {
+            "query": notifier.request.operation,
+            "variables": notifier.request.params ?? {},
+          })!,
           _createPushHandler(subscriptionHandler, notifier));
     }
   }
@@ -144,11 +146,11 @@ class AbsintheSocket {
 }
 
 class Notifier<Result> {
-  GqlRequest? request;
+  GqlRequest request;
   List<Observer<Result>> observers = [];
   String? subscriptionId;
 
-  Notifier({this.request});
+  Notifier({required this.request});
 
   void observe(Observer observer) {
     observers.add(observer as Observer<Result>);
@@ -175,9 +177,10 @@ class Observer<Result> {
 }
 
 class GqlRequest {
-  String? operation;
+  String operation;
+  Map<String, dynamic>? params;
 
-  GqlRequest({this.operation});
+  GqlRequest({required this.operation, this.params});
 }
 
 class NotifierPushHandler<Response> {
