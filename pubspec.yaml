@@ -5,8 +5,8 @@ author: Josh Adams <josh@smoothterminal.com>
 homepage: http://github.com/dailydrip/absinthe_socket
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   # Talk to phoenix channels
-  phoenix_wings: ^0.1.3
+  phoenix_wings: ^1.0.2
