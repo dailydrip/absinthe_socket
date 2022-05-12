@@ -18,30 +18,23 @@ class AbsintheSocket {
   late NotifierPushHandler subscriptionHandler;
   late NotifierPushHandler unsubscriptionHandler;
 
-  static _onError(Map response) {
-    print("onError");
-    print(response.toString());
+  static _onError(Map? response) {
+    print("onError ${response?.toString()}");
   }
 
-  static _onSubscriptionSucceed(Notifier notifier) {
-    return (Map response) {
-      print("response");
-      print(response.toString());
-      notifier.subscriptionId = response["subscriptionId"];
-    };
+  static _onSubscriptionSucceed(Map? response, Notifier notifier) {
+    print("subscription response ${response?.toString()}");
+    notifier.subscriptionId = response?["subscriptionId"];
   }
 
-  _onUnsubscriptionSucceed(Notifier notifier) {
-    return (Map response) {
-      print("unsubscription response");
-      print(response.toString());
-      notifier.cancel();
-      _notifiers.remove(notifier);
-    };
+  _onUnsubscriptionSucceed(Map? response, Notifier notifier) {
+    print("unsubscription response ${response?.toString()}");
+    notifier.cancel();
+    _notifiers.remove(notifier);
   }
 
-  static _onTimeout(Map response) {
-    print("onTimeout");
+  static _onTimeout(Map? response) {
+    print("onTimeout ${response?.toString()}");
   }
 
   AbsintheSocket(this.endpoint, {this.socketOptions}) {
@@ -59,15 +52,10 @@ class AbsintheSocket {
   }
 
   _connect() async {
-    print("connect absinthe socket 1");
     await _phoenixSocket.connect();
-    print("connect absinthe socket 2");
     _phoenixSocket.onMessage(_onMessage);
-    print("connect absinthe socket 3");
     _absintheChannel = _phoenixSocket.channel("__absinthe__:control", {});
-    print("connect absinthe socket 4");
     _absintheChannel!.join()!.receive("ok", _sendQueuedPushes);
-    print("connect absinthe socket 5");
   }
 
   disconnect() {
@@ -87,10 +75,12 @@ class AbsintheSocket {
 
   void unsubscribe(Notifier notifier) {
     _handlePush(
-        _absintheChannel!.push(
-            event: "unsubscribe",
-            payload: {"subscriptionId": notifier.subscriptionId})!,
-        _createPushHandler(unsubscriptionHandler, notifier));
+      _absintheChannel!.push(
+          event: "unsubscribe",
+          payload: {"subscriptionId": notifier.subscriptionId})!,
+      unsubscriptionHandler,
+      notifier,
+    );
   }
 
   Notifier send(GqlRequest request) {
@@ -113,35 +103,25 @@ class AbsintheSocket {
       _queuedPushes.add(notifier);
     } else {
       _handlePush(
-          _absintheChannel!.push(event: "doc", payload: {
+        _absintheChannel!.push(
+          event: "doc",
+          payload: {
             "query": notifier.request.operation,
             "variables": notifier.request.params ?? {},
-          })!,
-          _createPushHandler(subscriptionHandler, notifier));
+          },
+        ),
+        subscriptionHandler,
+        notifier,
+      );
     }
   }
 
-  _handlePush(PhoenixPush push, PushHandler handler) {
+  _handlePush(
+      PhoenixPush? push, NotifierPushHandler handler, Notifier notifier) {
     push
-        .receive(
-            "ok", handler.onSucceed as dynamic Function(Map<dynamic, dynamic>?))
-        .receive("error",
-            handler.onError as dynamic Function(Map<dynamic, dynamic>?))
-        .receive("timeout",
-            handler.onTimeout as dynamic Function(Map<dynamic, dynamic>?));
-  }
-
-  PushHandler _createPushHandler(
-      NotifierPushHandler notifierPushHandler, Notifier notifier) {
-    return _createEventHandler(notifier, notifierPushHandler);
-  }
-
-  _createEventHandler(
-      Notifier notifier, NotifierPushHandler notifierPushHandler) {
-    return PushHandler(
-        onError: notifierPushHandler.onError,
-        onSucceed: notifierPushHandler.onSucceed!(notifier),
-        onTimeout: notifierPushHandler.onTimeout);
+        ?.receive("ok", (response) => handler.onSucceed(response, notifier))
+        .receive("error", handler.onError)
+        .receive("timeout", handler.onTimeout);
   }
 }
 
@@ -184,17 +164,12 @@ class GqlRequest {
 }
 
 class NotifierPushHandler<Response> {
-  Function? onError;
-  Function? onSucceed;
-  Function? onTimeout;
+  Function(Map?) onError;
+  Function(Map?, Notifier) onSucceed;
+  Function(Map?) onTimeout;
 
-  NotifierPushHandler({this.onError, this.onSucceed, this.onTimeout});
-}
-
-class PushHandler<Response> {
-  Function? onError;
-  Function? onSucceed;
-  Function? onTimeout;
-
-  PushHandler({this.onError, this.onSucceed, this.onTimeout});
+  NotifierPushHandler(
+      {required this.onError,
+      required this.onSucceed,
+      required this.onTimeout});
 }
